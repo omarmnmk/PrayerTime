@@ -22,7 +22,7 @@ jobs:
       run: pip install requests beautifulsoup4
 
     - name: Run scraper
-      run: python .scraper/scrape_prayer_times.py
+      run: python .scraper/scraper.py
 
     - name: Commit and push updated JSON
       run: |
