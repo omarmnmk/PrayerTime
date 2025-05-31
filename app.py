@@ -106,7 +106,6 @@ def get_prayer_times():
 
 if __name__ == "__main__":
     print("Starting prayer notification server...")
-    
     prayer_times_data = scrape_prayer_times()
     if prayer_times_data:
         schedule_prayer_notifications(prayer_times_data)
