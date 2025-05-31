@@ -18,7 +18,9 @@ ONESIGNAL_API_KEY = os.getenv("ONESIGNAL_API_KEY")
 PRAYER_TIMES_URL = "https://www.menatrust.org.uk/salahtimes/"
 
 def scrape_prayer_times():
+    print("Scraping prayer times now...")
     response = requests.get(PRAYER_TIMES_URL)
+    print(f"Response status: {response.status_code}")
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, "html.parser")
         table = soup.find("table", class_="dptTimetable dptNoBorder customStyles dptUserStyles")
@@ -41,6 +43,7 @@ def scrape_prayer_times():
                             azan, iqama = "-", "-"
                     prayer_times[prayer] = {"azan": azan, "iqama": iqama}
             print("Prayer times scraped and updated.")
+            print("Prayer times data:", prayer_times)
             return prayer_times
     print("Failed to scrape prayer times.")
     return {}
@@ -87,6 +90,7 @@ def get_prayer_times():
     try:
         with open("today_prayer_times.json") as f:
             data = json.load(f)
+            print("File data:", data)
         return jsonify(data)
     except Exception as e:
         return jsonify({"error": "Prayer times not found"}), 404
