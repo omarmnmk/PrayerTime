@@ -55,7 +55,7 @@ def send_notification(prayer, iqama_time):
         "included_segments": ["All"],
         "headings": {"en": "Prayer Reminder"},
         "contents": {"en": f"It’s time for {prayer} prayer (Iqama at {iqama_time})."},
-        "url": "https://your-github-pages-site"  # Change to your site URL!
+        "url": "https://omarmnmk.github.io/PrayerTime/"  # Change to your site URL!
     }
     headers = {
         "Content-Type": "application/json; charset=utf-8",
