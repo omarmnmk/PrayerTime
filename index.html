@@ -3,27 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <title>Prayer Times Notifications</title>
+
 <!-- OneSignal SDK -->
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
 <script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "598c308f-f74e-4449-8635-b9033d340cbc",
+  window.OneSignal = window.OneSignal || [];
+  OneSignal.push(function() {
+    OneSignal.init({
+      appId: "Y598c308f-f74e-4449-8635-b9033d340cbc" // This will be dynamically filled by your deployment, if needed
     });
   });
 </script>
 </head>
-<body>
 
+<body>
   <h1>Today's Prayer Times</h1>
   <div id="prayer-times"></div>
-  
+
   <button onclick="subscribeUser()">Subscribe to Notifications</button>
-  
-  <!-- Your JS Logic -->
+
   <script>
-    // Fetch the JSON data (must be after the HTML element!)
+    // Fetch prayer times JSON (assuming it's hosted alongside index.html)
     fetch('today_prayer_times.json')
       .then(response => response.json())
       .then(prayerTimes => {
@@ -34,7 +34,7 @@
           container.appendChild(div);
         }
       });
-  
+
     // Notifications subscribe button
     function subscribeUser() {
       OneSignal.push(function() {
@@ -42,6 +42,5 @@
       });
     }
   </script>
-
 </body>
 </html>
