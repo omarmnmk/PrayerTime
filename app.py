@@ -1,21 +1,19 @@
-from flask import Flask
+from flask import Flask, jsonify
 from apscheduler.schedulers.background import BackgroundScheduler
 import requests
-import json
+from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 import os
-from bs4 import BeautifulSoup
-
-from flask import jsonify
-
 
 
 app = Flask(__name__)
 
-# OneSignal credentials (from Railway or Fly.io environment variables)
 ONESIGNAL_APP_ID = os.getenv("ONESIGNAL_APP_ID")
 ONESIGNAL_API_KEY = os.getenv("ONESIGNAL_API_KEY")
 PRAYER_TIMES_URL = "https://www.menatrust.org.uk/salahtimes/"
+
+# Global variable to hold today's prayer times in memory
+prayer_times_data = {}
 
 def scrape_prayer_times():
     print("Scraping prayer times now...")
@@ -42,7 +40,6 @@ def scrape_prayer_times():
                         else:
                             azan, iqama = "-", "-"
                     prayer_times[prayer] = {"azan": azan, "iqama": iqama}
-            print("Prayer times scraped and updated.")
             print("Prayer times data:", prayer_times)
             return prayer_times
     print("Failed to scrape prayer times.")
@@ -55,7 +52,7 @@ def send_notification(prayer, iqama_time):
         "included_segments": ["All"],
         "headings": {"en": "Prayer Reminder"},
         "contents": {"en": f"It’s time for {prayer} prayer (Iqama at {iqama_time})."},
-        "url": "https://omarmnmk.github.io/PrayerTime/"  # Change to your site URL!
+        "url": "https://omarmnmk.github.io/PrayerTime/"  # change to your real site URL!
     }
     headers = {
         "Content-Type": "application/json; charset=utf-8",
@@ -67,19 +64,34 @@ def send_notification(prayer, iqama_time):
     else:
         print(f"Failed to send notification for {prayer}. Status: {response.status_code}")
 
+
 def schedule_prayer_notifications(prayer_times):
     scheduler = BackgroundScheduler(timezone="UTC")
     today = datetime.utcnow().date()
+    
     for prayer, times in prayer_times.items():
+        # Azan time
+        azan_time = times["azan"]
+        if azan_time and azan_time != "-":
+            hour, minute = map(int, azan_time.split(":"))
+            azan_datetime = datetime(today.year, today.month, today.day, hour, minute) - timedelta(minutes=5)
+            if azan_datetime > datetime.utcnow():
+                scheduler.add_job(send_notification, 'date', run_date=azan_datetime,
+                                  args=[f"{prayer} Azan", azan_time])
+                print(f"Scheduled {prayer} Azan notification at {azan_datetime} UTC")
+        
+        # Iqama time
         iqama_time = times["iqama"]
-        if iqama_time != "-" and iqama_time:
+        if iqama_time and iqama_time != "-":
             hour, minute = map(int, iqama_time.split(":"))
-            prayer_datetime = datetime(today.year, today.month, today.day, hour, minute) - timedelta(minutes=5)
-            if prayer_datetime > datetime.utcnow():
-                scheduler.add_job(send_notification, 'date', run_date=prayer_datetime,
-                                  args=[prayer, iqama_time])
-                print(f"Scheduled {prayer} notification at {prayer_datetime} UTC")
+            iqama_datetime = datetime(today.year, today.month, today.day, hour, minute) - timedelta(minutes=5)
+            if iqama_datetime > datetime.utcnow():
+                scheduler.add_job(send_notification, 'date', run_date=iqama_datetime,
+                                  args=[f"{prayer} Iqama", iqama_time])
+                print(f"Scheduled {prayer} Iqama notification at {iqama_datetime} UTC")
+    
     scheduler.start()
+
 
 @app.route("/")
 def home():
@@ -87,17 +99,15 @@ def home():
 
 @app.route("/prayer-times")
 def get_prayer_times():
-    try:
-        with open("today_prayer_times.json") as f:
-            data = json.load(f)
-            print("File data:", data)
-        return jsonify(data)
-    except Exception as e:
+    if prayer_times_data:
+        return jsonify(prayer_times_data)
+    else:
         return jsonify({"error": "Prayer times not found"}), 404
 
 if __name__ == "__main__":
     print("Starting prayer notification server...")
-    prayer_times = scrape_prayer_times()
-    if prayer_times:
-        schedule_prayer_notifications(prayer_times)
+    
+    prayer_times_data = scrape_prayer_times()
+    if prayer_times_data:
+        schedule_prayer_notifications(prayer_times_data)
     app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
