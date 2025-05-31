@@ -6,6 +6,10 @@ from datetime import datetime, timedelta
 import os
 from bs4 import BeautifulSoup
 
+from flask import jsonify
+
+
+
 app = Flask(__name__)
 
 # OneSignal credentials (from Railway or Fly.io environment variables)
@@ -77,6 +81,15 @@ def schedule_prayer_notifications(prayer_times):
 @app.route("/")
 def home():
     return "Prayer Notification Server Running!"
+
+@app.route("/prayer-times")
+def get_prayer_times():
+    try:
+        with open("today_prayer_times.json") as f:
+            data = json.load(f)
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({"error": "Prayer times not found"}), 404
 
 if __name__ == "__main__":
     print("Starting prayer notification server...")
