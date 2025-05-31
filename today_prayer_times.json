@@ -1,0 +1,30 @@
+{
+  "Fajr": {
+    "azan": "2:48",
+    "iqama": "3:45"
+  },
+  "Sunrise": {
+    "azan": "4:36",
+    "iqama": "-"
+  },
+  "Zuhr": {
+    "azan": "1:20",
+    "iqama": "1:30"
+  },
+  "Asr": {
+    "azan": "5:43",
+    "iqama": "6:30"
+  },
+  "Maghrib": {
+    "azan": "9:57",
+    "iqama": "10:02"
+  },
+  "Isha": {
+    "azan": "10:57",
+    "iqama": "11:00"
+  },
+  "": {
+    "azan": "-",
+    "iqama": "-"
+  }
+}

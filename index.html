@@ -16,38 +16,32 @@
 </head>
 <body>
 
-<h1>Today's Prayer Times</h1>
-<div id="prayer-times"></div>
-
-<script>
-  // Simulated JSON data for today's prayer times (you'd normally fetch this from your server)
-  const prayerTimes = {
-    "Fajr": {"azan": "2:49", "iqama": "3:45"},
-    "Sunrise": {"azan": "4:41", "iqama": "-"},
-    "Zuhr": {"azan": "1:19", "iqama": "1:30"},
-    "Asr": {"azan": "5:41", "iqama": "6:30"},
-    "Maghrib": {"azan": "9:51", "iqama": "9:56"},
-    "Isha": {"azan": "10:51", "iqama": "11:00"}
-  };
-
-  // Render prayer times
-  const container = document.getElementById("prayer-times");
-  for (const [prayer, times] of Object.entries(prayerTimes)) {
-    const div = document.createElement("div");
-    div.innerHTML = `<strong>${prayer}</strong>: Azan - ${times.azan}, Iqama - ${times.iqama}`;
-    container.appendChild(div);
-  }
-</script>
-
-<button onclick="subscribeUser()">Subscribe to Notifications</button>
-
-<script>
-  function subscribeUser() {
-    OneSignal.push(function() {
-      OneSignal.showNativePrompt();
-    });
-  }
-</script>
+  <h1>Today's Prayer Times</h1>
+  <div id="prayer-times"></div>
+  
+  <button onclick="subscribeUser()">Subscribe to Notifications</button>
+  
+  <!-- Your JS Logic -->
+  <script>
+    // Fetch the JSON data (must be after the HTML element!)
+    fetch('today_prayer_times.json')
+      .then(response => response.json())
+      .then(prayerTimes => {
+        const container = document.getElementById("prayer-times");
+        for (const [prayer, times] of Object.entries(prayerTimes)) {
+          const div = document.createElement("div");
+          div.innerHTML = `<strong>${prayer}</strong>: Azan - ${times.azan}, Iqama - ${times.iqama}`;
+          container.appendChild(div);
+        }
+      });
+  
+    // Notifications subscribe button
+    function subscribeUser() {
+      OneSignal.push(function() {
+        OneSignal.showNativePrompt();
+      });
+    }
+  </script>
 
 </body>
 </html>
