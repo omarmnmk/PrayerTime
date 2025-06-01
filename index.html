@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Today's Prayer Times</title>
-<style>
-  body { font-family: Arial, sans-serif; margin: 2rem; }
-  h1 { font-size: 1.5rem; }
-  .date { font-size: 1.2rem; margin-bottom: 1rem; }
-  .prayer { margin: 0.5rem 0; }
-  .prayer strong { display: inline-block; width: 80px; }
-</style>
-
-
+  <head>
+    <meta charset="UTF-8">
+    <title>Today's Prayer Times</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 2rem; }
+      h1 { font-size: 1.5rem; }
+      .date { font-size: 1.2rem; margin-bottom: 1rem; }
+      .prayer { margin: 0.5rem 0; }
+      .prayer strong { display: inline-block; width: 80px; }
+    </style>
+    
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
   OneSignalDeferred.push(async function(OneSignal) {
@@ -20,9 +20,7 @@
     });
   });
 </script>
-
-
-</head>
+    </head>
 <body>
 
 <h1>Prayer Times for Today</h1>
