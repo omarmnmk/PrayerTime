@@ -23,28 +23,39 @@
   <button onclick="subscribeUser()">Subscribe to Notifications</button>
 
   <script>
-    // Fetch the prayer times from your Fly.io server
     fetch('https://prayertime.fly.dev/prayer-times')
       .then(response => response.json())
-      .then(prayerTimes => {
-        const container = document.getElementById("prayer-times");
-        for (const [prayer, times] of Object.entries(prayerTimes)) {
-          // Skip empty prayer names
-          if (prayer.trim() === "") continue;
-  
-          const div = document.createElement("div");
-          div.innerHTML = `<strong>${prayer}</strong>: Azan - ${times.azan}, Iqama - ${times.iqama}`;
-          container.appendChild(div);
+      .then(data => {
+        if (data.error) {
+          document.getElementById("prayer-times").textContent = "Failed to load prayer times.";
+          return;
         }
-      })
-      .catch(error => {
-        console.error("Failed to fetch prayer times:", error);
+  
+        // Show dates
+        document.getElementById("dates").innerHTML = `
+          <div><strong>Date:</strong> ${data.date}</div>
+          <div><strong>Hijri:</strong> ${data.hijri_date}</div>
+        `;
+  
+        // Ordered list of prayers
+        const orderedPrayers = ["Fajr", "Sunrise", "Zuhr", "Asr", "Maghrib", "Isha"];
         const container = document.getElementById("prayer-times");
-        container.innerHTML = "Failed to load prayer times. Please try again later.";
+  
+        orderedPrayers.forEach(prayer => {
+          const times = data.prayer_times[prayer];
+          if (times) {
+            const div = document.createElement("div");
+            div.className = "prayer";
+            div.innerHTML = `<strong>${prayer}</strong>: Azan - ${times.azan}, Iqama - ${times.iqama}`;
+            container.appendChild(div);
+          }
+        });
+      })
+      .catch(err => {
+        console.error("Fetch error:", err);
+        document.getElementById("prayer-times").textContent = "Failed to load data.";
       });
  
-
-
     // Notifications subscribe button
     function subscribeUser() {
       OneSignal.push(function() {
