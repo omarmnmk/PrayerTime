@@ -24,7 +24,7 @@
 
   <script>
     
-    fetch('https://prayertime.fly.dev')  // use your real Fly.io server URL
+    fetch('https://prayertime.fly.dev/prayer-times')  // use your real Fly.io server URL
       .then(response => response.json())
   .then(prayerTimes => {
     const container = document.getElementById("prayer-times");
