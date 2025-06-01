@@ -10,6 +10,16 @@
   .prayer { margin: 0.5rem 0; }
   .prayer strong { display: inline-block; width: 80px; }
 </style>
+
+<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+<script>
+  window.OneSignal = window.OneSignal || [];
+  OneSignal.push(function() {
+    OneSignal.init({
+      appId: "598c308f-f74e-4449-8635-b9033d340cbc",
+    });
+  });
+</script>
 </head>
 <body>
 
@@ -51,6 +61,17 @@
       console.error("Fetch error:", err);
       document.getElementById("prayer-times").textContent = "Failed to load data.";
     });
+
+    
+</script>
+<button onclick="subscribeUser()">Subscribe to Notifications</button>
+
+<script>
+  function subscribeUser() {
+    OneSignal.push(function() {
+      OneSignal.showNativePrompt();
+    });
+  }
 </script>
 
 </body>
