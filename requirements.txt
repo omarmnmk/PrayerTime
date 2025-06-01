@@ -2,3 +2,4 @@ Flask
 requests
 APScheduler
 beautifulsoup4
+flask-cors

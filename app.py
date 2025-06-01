@@ -120,7 +120,10 @@ from datetime import datetime, timedelta
 import os
 import threading
 
+from flask_cors import CORS
+
 app = Flask(__name__)
+CORS(app)  #
 
 ONESIGNAL_APP_ID = os.getenv("ONESIGNAL_APP_ID")
 ONESIGNAL_API_KEY = os.getenv("ONESIGNAL_API_KEY")
