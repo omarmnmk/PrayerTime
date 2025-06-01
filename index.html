@@ -23,17 +23,26 @@
   <button onclick="subscribeUser()">Subscribe to Notifications</button>
 
   <script>
-    
-    fetch('https://prayertime.fly.dev/prayer-times')  // use your real Fly.io server URL
+    // Fetch the prayer times from your Fly.io server
+    fetch('https://prayertime.fly.dev/prayer-times')
       .then(response => response.json())
-  .then(prayerTimes => {
-    const container = document.getElementById("prayer-times");
-    for (const [prayer, times] of Object.entries(prayerTimes)) {
-      const div = document.createElement("div");
-      div.innerHTML = `<strong>${prayer}</strong>: Azan - ${times.azan}, Iqama - ${times.iqama}`;
-      container.appendChild(div);
-    }
-  });
+      .then(prayerTimes => {
+        const container = document.getElementById("prayer-times");
+        for (const [prayer, times] of Object.entries(prayerTimes)) {
+          // Skip empty prayer names
+          if (prayer.trim() === "") continue;
+  
+          const div = document.createElement("div");
+          div.innerHTML = `<strong>${prayer}</strong>: Azan - ${times.azan}, Iqama - ${times.iqama}`;
+          container.appendChild(div);
+        }
+      })
+      .catch(error => {
+        console.error("Failed to fetch prayer times:", error);
+        const container = document.getElementById("prayer-times");
+        container.innerHTML = "Failed to load prayer times. Please try again later.";
+      });
+ 
 
 
     // Notifications subscribe button
