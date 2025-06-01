@@ -139,12 +139,22 @@ def scrape_prayer_times():
         soup = BeautifulSoup(response.text, "html.parser")
         table = soup.find("table", class_="dptTimetable dptNoBorder customStyles dptUserStyles")
         if table:
+            # Fetch English and Hijri date from the header
+            header = table.find("th", colspan="3")
+            date_text = header.contents[0].strip().replace("Salah times for today,", "").strip()
+            hijri_date = header.find("p", class_="hijriDate").text.strip()
+
+            print("Date:", date_text)
+            print("Hijri date:", hijri_date)
+
             prayer_times = {}
             rows = table.find_all("tr")
             for row in rows:
                 prayer_name = row.find("th", class_="prayerName")
                 if prayer_name:
                     prayer = prayer_name.text.strip()
+                    if not prayer:
+                        continue
                     if prayer.lower() == "sunrise":
                         azan = row.find_all("td")[0].text.strip()
                         iqama = "-"
@@ -157,9 +167,14 @@ def scrape_prayer_times():
                             azan, iqama = "-", "-"
                     prayer_times[prayer] = {"azan": azan, "iqama": iqama}
             print("Prayer times data:", prayer_times)
-            return prayer_times
+            return {
+                "date": date_text,
+                "hijri_date": hijri_date,
+                "prayer_times": prayer_times
+            }
     print("Failed to scrape prayer times.")
     return {}
+
 
 def send_notification(prayer, time):
     url = "https://onesignal.com/api/v1/notifications"
