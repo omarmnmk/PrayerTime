@@ -12,21 +12,16 @@
 </style>
 
 
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer>
-
-  window.OneSignal = window.OneSignal || [];
-  OneSignal.push(function() {
-    OneSignal.init({
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
       appId: "598c308f-f74e-4449-8635-b9033d340cbc",
     });
   });
-
-  function subscribeUser() {
-    OneSignal.push(function() {
-      OneSignal.showSlidedownPrompt(); // alternative to showNativePrompt
-    });
-  }
 </script>
+
+
 </head>
 <body>
 
