@@ -11,6 +11,7 @@
   .prayer strong { display: inline-block; width: 80px; }
 </style>
 
+
 <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
 <script>
   window.OneSignal = window.OneSignal || [];
@@ -19,6 +20,12 @@
       appId: "598c308f-f74e-4449-8635-b9033d340cbc",
     });
   });
+
+  function subscribeUser() {
+    OneSignal.push(function() {
+      OneSignal.showSlidedownPrompt(); // alternative to showNativePrompt
+    });
+  }
 </script>
 </head>
 <body>
