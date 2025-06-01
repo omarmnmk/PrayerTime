@@ -64,12 +64,12 @@
 
     
 </script>
-<button onclick="subscribeUser()">Subscribe to Notifications</button>
+<button onclick="subscribeUser()">Subscribe for daily prayer notifcation</button>
 
 <script>
   function subscribeUser() {
-    OneSignal.push(function() {
-      OneSignal.showNativePrompt();
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.Notifications.requestPermission();
     });
   }
 </script>
